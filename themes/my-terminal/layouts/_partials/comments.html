@@ -7,22 +7,11 @@ Hugo directory and insert:
 or whatever comment engine you want -> https://gohugo.io/content-management/comments/#readout -->
 
 {{- if (eq (.Site.Params.disableComments | default false) false) -}}
-    {{- if (eq (.Params.disableComments | default false) false) -}}
-        <script src="https://giscus.app/client.js"
-            data-repo="ManassehZhou/notion-blogger"
-            data-repo-id="R_kgDOPzbfbw"
-            data-category="Comments"
-            data-category-id="DIC_kwDOPzbfb84Cvq6G"
-            data-mapping="pathname"
-            data-strict="1"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="bottom"
-            data-theme="preferred_color_scheme"
-            data-lang="en"
-            data-loading="lazy"
-            crossorigin="anonymous"
-            async>
-        </script>
-    {{- end -}}
+{{- if (eq (.Params.disableComments | default false) false) -}}
+<script src="https://giscus.app/client.js" data-repo="ManassehZhou/lvm.me" data-repo-id="R_kgDOP0CKBw"
+    data-category="General" data-category-id="DIC_kwDOP0CKB84CvtRT" data-mapping="pathname" data-strict="1"
+    data-reactions-enabled="1" data-emit-metadata="0" data-input-position="bottom" data-theme="preferred_color_scheme"
+    data-lang="en" data-loading="lazy" crossorigin="anonymous" async>
+    </script>
+{{- end -}}
 {{- end -}}
