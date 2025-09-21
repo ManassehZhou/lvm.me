@@ -1,0 +1,12 @@
+<header>
+    <div class="terminal-nav">
+        <div class="terminal-logo">
+            <div class="logo terminal-prompt">
+                <a href="{{ .Site.BaseURL }}" class="no-style {{ with .Site.Params.emitTitle }}site-name{{ end }}">{{
+                    .Site.Title }}</a>:~/{{ range after 1 .Ancestors.Reverse }}<a href="{{ .RelPermalink }}">{{ path.Base .RelPermalink }}</a>/{{
+                end }}{{ if ne .Kind "home" }}<a href="{{ .RelPermalink }}">{{ path.Base .RelPermalink }}</a>{{ end }}#
+            </div>
+        </div>
+        {{ partial "nav.html" (dict "menuID" "main" "page" .) }}
+    </div>
+</header>

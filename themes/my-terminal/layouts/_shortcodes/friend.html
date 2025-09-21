@@ -1,0 +1,31 @@
+{{/*
+Friend shortcode for displaying friend links with terminal.css styling
+Usage: {{< friend name="Friend Name" url="https://example.com" description="Friend description" avatar="avatar-url">}}
+*/}}
+
+{{ $name := .Get "name" }}
+{{ $url := .Get "url" }}
+{{ $description := .Get "description" }}
+{{ $avatar := .Get "avatar" }}
+
+<div class="terminal-card terminal-media">
+  <div class="friends">
+    {{ if $avatar }}
+    <div class="terminal-media-left">
+      <div class="terminal-avatarholder">
+        <img src="{{ $avatar }}" alt="{{ $name }}" />
+      </div>
+    </div>
+    {{ end }}
+    <div class="terminal-media-body">
+      <div class="terminal-media-heading">
+        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer">{{ $name }}</a>
+      </div>
+      {{ if $description }}
+      <div class="terminal-media-content">
+        {{ $description }}
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>

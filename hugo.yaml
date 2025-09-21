@@ -1,0 +1,43 @@
+baseURL: https://lvm.me/
+languageCode: en-US
+theme: my-terminal
+hasCJKLanguage: true
+enableRobotsTXT: true
+enableEmoji: true
+copyright: "mzzzz"
+
+services:
+  googleAnalytics: 
+    id: G-4V3C91FPD3
+
+menus:
+  main:
+  - name: about/
+    url: /about/
+    weight: 1
+    params:
+      class: menu-item
+  - name: posts/
+    url: /posts/
+    weight: 2
+    params:
+      class: menu-item
+  - name: photos/
+    url: /photos/
+    weight: 3
+    params:
+      class: menu-item
+  - name: archives/
+    url: /archives/
+    weight: 4
+    params:
+      class: menu-item
+  - name: friends/
+    url: /friends/
+    weight: 5
+    params:
+      class: menu-item
+title: lvm.me
+params:
+  description: "A Student, A Software Developer, A CTFer, and A Boring People. | Coding With Love and Caffeine. "
+  emitTitle: true

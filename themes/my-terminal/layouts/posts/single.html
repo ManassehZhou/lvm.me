@@ -1,0 +1,34 @@
+{{ define "main" }}
+<div class="components components-grid">
+    {{ if .TableOfContents }}
+    <div>
+        <aside class="post-toc" aria-label="Table of contents">
+            <h3>On this page</h3>
+            {{ .TableOfContents | safeHTML }}
+        </aside>
+    </div>
+    {{ end }}
+    <main>
+        <h1>{{ .Title }}</h1>
+        Created At: {{ .Date | time.Format ":date_medium" }}
+        {{ if $.Site.Params.lastModDisplay }}
+        // Updated At: {{ partial "lastmod.html" . }}
+        {{ end }}
+        {{ if or .Params.linkedin .Params.twitter }}
+        <br />
+        {{ with .Params.linkedin }}
+        // <a href="{{ . }}">Linkedin</a>
+        {{ end }}
+        {{ with .Params.twitter }}
+        // <a href="{{ . }}">Twitter</a>
+        {{ end }}
+        {{ end }}
+        <br />
+        {{ .Content }}
+
+        {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+    </main>
+</div>
+{{ partial "comments.html" . }}
+
+{{ end }}

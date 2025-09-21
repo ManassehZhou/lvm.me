@@ -1,0 +1,65 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<br />
+{{ .Content }}
+
+<div class="posts-list">
+    {{ $paginator := .Paginate (where .Pages "Params.private" "ne" true) }}
+    {{ range $paginator.Pages }}
+    <div class="post">
+        <p>
+        <div class="date">{{ .PublishDate.Format "Jan. 2, 2006" }}</div>
+        <h1><a href="{{ .Permalink }}" title="{{ .Title }}">{{ .Title }}</a></h1>
+        </p>
+    </div>
+    {{ end }}
+    <!-- Pager -->
+    {{ if gt $paginator.TotalPages 1 }}
+    <nav class="terminal-menu pagination">
+        <ul>
+            {{ if $paginator.HasPrev }}
+            <li><a href="{{ $paginator.Prev.URL }}" class="btn btn-ghost">&larr; Prev</a></li>
+            {{ end }}
+
+            {{/* Condensed pagination: show at most 5 numeric pages; use ellipses for skipped ranges */}}
+            {{ $total := $paginator.TotalPages }}
+            {{ $cur := $paginator.PageNumber }}
+            {{ $s := newScratch }}
+            {{ if le $total 5 }}
+            {{ $s.Set "pages" (seq 1 $total) }}
+            {{ else if le $cur 3 }}
+            {{ $s.Set "pages" (slice 1 2 3 4 $total) }}
+            {{ else if ge $cur (sub $total 2) }}
+            {{ $s.Set "pages" (slice 1 (sub $total 3) (sub $total 2) (sub $total 1) $total) }}
+            {{ else }}
+            {{ $s.Set "pages" (slice 1 (sub $cur 1) $cur (add $cur 1) $total) }}
+            {{ end }}
+
+            {{ $pages := $s.Get "pages" }}
+            {{ range $i, $pnum := $pages }}
+            {{ if gt $i 0 }}
+            {{ $prev := index $pages (sub $i 1) }}
+            {{ if gt (sub $pnum $prev) 1 }}
+            <li class="dots">…</li>
+            {{ end }}
+            {{ end }}
+            <li>
+                {{ if eq $pnum $paginator.PageNumber }}
+                <a class="active">{{ $pnum }}</a>
+                {{ else }}
+                {{/* find pager with this page number to get URL */}}
+                {{ $pager := index $paginator.Pagers (sub $pnum 1) }}
+                <a href="{{ $pager.URL }}">{{ $pnum }}</a>
+                {{ end }}
+            </li>
+            {{ end }}
+
+            {{ if $paginator.HasNext }}
+            <li><a href="{{ $paginator.Next.URL }}" class="btn btn-ghost">Next &rarr;</a></li>
+            {{ end }}
+        </ul>
+    </nav>
+    {{ end }}
+</div>
+
+{{ end }}

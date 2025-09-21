@@ -1,0 +1,25 @@
+{{ define "main" }}
+<main>
+  <h1>{{ .Title }}</h1>
+  Created At: {{ .Date | time.Format ":date_medium" }}
+  {{ if $.Site.Params.lastModDisplay }}
+  // Updated At: {{ partial "lastmod.html" . }}
+  {{ end }}
+  {{ if or .Params.linkedin .Params.twitter }}
+  <br />
+  {{ with .Params.linkedin }}
+  // <a href="{{ . }}">Linkedin</a>
+  {{ end }}
+  {{ with .Params.twitter }}
+  // <a href="{{ . }}">Twitter</a>
+  {{ end }}
+  {{ end }}
+  <br />
+  {{ .Content }}
+
+  {{ partial "terms.html" (dict "taxonomy" "tags" "page" .) }}
+</main>
+
+{{ partial "comments.html" . }}
+
+{{ end }}

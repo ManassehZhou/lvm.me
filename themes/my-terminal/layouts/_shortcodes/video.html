@@ -1,0 +1,116 @@
+{{/*
+Video shortcode for embedding videos with terminal.css styling
+Supports YouTube, Vimeo, Bilibili, and direct video files with auto-detection
+Usage: 
+  Auto-detect: {{< video url="https://www.youtube.com/watch?v=VIDEO_ID" title="Video Title" >}}
+  Auto-detect: {{< video url="https://vimeo.com/VIDEO_ID" title="Video Title" >}}
+  Auto-detect: {{< video url="https://www.bilibili.com/video/BV1234567890" title="Video Title" >}}
+  Auto-detect: {{< video url="https://player.bilibili.com/player.html?bvid=BV1234567890" title="Video Title" >}}
+  Manual: {{< video type="youtube" id="VIDEO_ID" title="Video Title" >}}
+  Manual: {{< video type="bilibili" id="BV1234567890" title="Video Title" >}}
+  Direct: {{< video src="video.mp4" title="Video Title" poster="poster.jpg" >}}
+*/}}
+
+{{ $url := .Get "url" }}
+{{ $type := .Get "type" }}
+{{ $id := .Get "id" }}
+{{ $src := .Get "src" }}
+{{ $title := .Get "title" | default "Video" }}
+{{ $poster := .Get "poster" }}
+{{ $width := .Get "width" | default "100%" }}
+{{ $height := .Get "height" | default "315" }}
+
+{{/* Auto-detect video type from URL if not explicitly set */}}
+{{ if and $url (not $type) }}
+  {{ if or (in $url "youtube.com") (in $url "youtu.be") }}
+    {{ $type = "youtube" }}
+    {{/* Extract YouTube ID from various URL formats */}}
+    {{ if in $url "youtube.com/watch" }}
+      {{ $id = (index (split (index (split $url "v=") 1) "&") 0) }}
+    {{ else if in $url "youtu.be/" }}
+      {{ $id = (index (split (index (split $url "youtu.be/") 1) "?") 0) }}
+    {{ else if in $url "youtube.com/embed/" }}
+      {{ $id = (index (split (index (split $url "embed/") 1) "?") 0) }}
+    {{ end }}
+  {{ else if in $url "vimeo.com" }}
+    {{ $type = "vimeo" }}
+    {{/* Extract Vimeo ID from URL */}}
+    {{ $urlParts := split $url "/" }}
+    {{ range $urlParts }}
+      {{ if and (gt (len .) 5) (not (in . "vimeo.com")) (not (in . "player.vimeo.com")) (not (in . "video")) }}
+        {{ $id = (index (split . "?") 0) }}
+      {{ end }}
+    {{ end }}
+  {{ else if or (in $url "bilibili.com") (in $url "player.bilibili.com") }}
+    {{ $type = "bilibili" }}
+    {{/* Extract Bilibili BV ID from various URL formats */}}
+    {{ if in $url "bvid=" }}
+      {{ $id = (index (split (index (split $url "bvid=") 1) "&") 0) }}
+    {{ else if in $url "/video/" }}
+      {{ $id = (index (split (index (split $url "/video/") 1) "?") 0) }}
+      {{ $id = (index (split $id "/") 0) }}
+    {{ end }}
+  {{ else }}
+    {{ $type = "direct" }}
+    {{ $src = $url }}
+  {{ end }}
+{{ else if not $type }}
+  {{ $type = "direct" }}
+{{ end }}
+
+<div class="terminal-card" style="margin: calc(var(--global-space) * 2) 0;">
+  <header>
+    <span class="terminal-prompt">{{ $title }}</span>
+  </header>
+  <div style="padding: 0; position: relative; overflow: hidden;">
+    {{ if eq $type "youtube" }}
+      <iframe 
+        width="{{ $width }}" 
+        height="{{ $height }}"
+        src="https://www.youtube.com/embed/{{ $id }}"
+        title="{{ $title }}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="display: block; width: 100%; border: none; background-color: var(--background-color);">
+      </iframe>
+    {{ else if eq $type "vimeo" }}
+      <iframe 
+        width="{{ $width }}" 
+        height="{{ $height }}"
+        src="https://player.vimeo.com/video/{{ $id }}"
+        title="{{ $title }}"
+        frameborder="0"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen
+        style="display: block; width: 100%; border: none; background-color: var(--background-color);">
+      </iframe>
+    {{ else if eq $type "bilibili" }}
+      <iframe 
+        width="{{ $width }}" 
+        height="{{ $height }}"
+        src="https://player.bilibili.com/player.html?bvid={{ $id }}"
+        title="{{ $title }}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        style="display: block; width: 100%; border: none; background-color: var(--background-color);">
+      </iframe>
+    {{ else if eq $type "direct" }}
+      <video 
+        width="{{ $width }}" 
+        height="{{ $height }}"
+        controls
+        {{ if $poster }}poster="{{ $poster }}"{{ end }}
+        style="display: block; width: 100%; background-color: var(--background-color);">
+        <source src="{{ $src }}" type="video/mp4">
+        <source src="{{ $src }}" type="video/webm">
+        <source src="{{ $src }}" type="video/ogg">
+        <p style="padding: var(--global-space); color: var(--secondary-color);">
+          Your browser does not support the video tag. 
+          <a href="{{ $src }}" style="color: var(--primary-color);">Download the video</a>
+        </p>
+      </video>
+    {{ end }}
+  </div>
+</div>

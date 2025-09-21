@@ -1,0 +1,57 @@
+{{/*
+PDF shortcode for embedding PDF documents with terminal.css styling
+Usage: {{< pdf src="document.pdf" title="Document Title" width="100%" height="600px" >}}
+*/}}
+
+{{ $src := .Get "src" }}
+{{ $title := .Get "title" | default "PDF Document" }}
+{{ $width := .Get "width" | default "100%" }}
+{{ $height := .Get "height" | default "600px" }}
+
+{{ if $src }}
+<div class="terminal-card" style="margin: calc(var(--global-space) * 2) 0;">
+  <header>
+    <span class="terminal-prompt">{{ $title }}</span>
+  </header>
+  <div style="padding: 0; position: relative; overflow: hidden;">
+    <iframe 
+      src="{{ $src }}"
+      width="{{ $width }}" 
+      height="{{ $height }}"
+      title="{{ $title }}"
+      frameborder="0"
+      style="display: block; width: 100%; border: none; background-color: var(--background-color);">
+    </iframe>
+    
+    <!-- Fallback for browsers that don't support PDF in iframe -->
+    <noscript>
+      <div style="padding: var(--global-space); text-align: center; background-color: var(--code-bg-color); border: 1px solid var(--secondary-color);">
+        <p style="color: var(--font-color); margin-bottom: var(--global-space);">
+          PDF cannot be displayed in this browser.
+        </p>
+        <a href="{{ $src }}" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="btn btn-primary"
+           style="display: inline-block;">
+          <span class="terminal-prompt">Download PDF</span>
+        </a>
+      </div>
+    </noscript>
+    
+    <!-- Alternative download link -->
+    <div style="padding: calc(var(--global-space) / 2); text-align: center; border-top: 1px solid var(--secondary-color); background-color: var(--code-bg-color);">
+      <a href="{{ $src }}" 
+         target="_blank" 
+         rel="noopener noreferrer"
+         style="color: var(--secondary-color); font-size: 0.9em; text-decoration: none;">
+        > Open in new tab / Download
+      </a>
+    </div>
+  </div>
+</div>
+{{ else }}
+<div class="terminal-alert terminal-alert-error" style="margin: calc(var(--global-space) * 2) 0;">
+  <span class="terminal-prompt">Error: PDF source not specified</span>
+</div>
+{{ end }}

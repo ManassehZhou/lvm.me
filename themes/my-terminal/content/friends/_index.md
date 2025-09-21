@@ -1,0 +1,4 @@
+---
+title: "Friends"
+type: "friends"
+---

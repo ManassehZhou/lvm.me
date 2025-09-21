@@ -1,0 +1,39 @@
+{{ define "main" }}
+<h1>{{ .Page.Title }}</h1>
+<br/>
+{{ .Content }}
+
+<section>
+  <div class="terminal-timeline">
+    {{ $pages := where .Site.RegularPages "Section" "in" (slice "posts" "photos") }}
+    {{ range $pages.GroupByDate "2006-01" }}
+        <div class="terminal-card">
+            <header>{{ (time (printf "%s-01" .Key)).Format "January 2006" }}</header>
+            <div>
+                {{ range .Pages }}
+                    {{ if not .Params.private }}
+                        <div class="terminal-media archive-entry">
+                            <div class="terminal-media-left">
+                                <span class="archive-date">{{ .PublishDate.Format "Jan 02" }}</span>
+                            </div>
+                            <div class="terminal-media-body">
+                                <div class="terminal-media-heading">
+                                    <a href="{{ .Permalink }}" title="{{ .Title }}">{{ .Title }}</a>
+                                    <span aria-hidden="true"></span>
+                                    {{ if eq .Type "gallery" }}
+                                        <span class="archive-type archive-type-gallery">Gallery</span>
+                                    {{ else }}
+                                        <span class="archive-type archive-type-post">Post</span>
+                                    {{ end }}
+                                </div>
+                            </div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            </div>
+        </div>
+    {{ end }}
+  </div>
+</section>
+
+{{ end }}

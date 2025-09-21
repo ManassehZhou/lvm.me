@@ -1,0 +1,55 @@
+baseURL: https://example.org/
+languageCode: en-US
+menus:
+  main:
+  - name: about/
+    url: /about/
+    weight: 1
+    params:
+      class: menu-item
+  - name: posts/
+    url: /posts/
+    weight: 2
+    params:
+      class: menu-item
+  - name: photos/
+    url: /photos/
+    weight: 3
+    params:
+      class: menu-item
+  - name: archives/
+    url: /archives/
+    weight: 4
+    params:
+      class: menu-item
+  - name: friends/
+    url: /friends/
+    weight: 5
+    params:
+      class: menu-item
+module:
+  hugoVersion:
+    extended: false
+    min: 0.146.0
+markup:
+  tableOfContents:
+    startLevel: 1
+    endLevel: 3
+    ordered: false
+  goldmark:
+    extensions:
+      passthrough:
+        enable: true
+        delimiters:
+          block:
+            - - \[
+              - \]
+            - - $$
+              - $$
+          inline:
+            - - \(
+              - \)
+title: My New Hugo Site
+params:
+  description: "A brief description of my new Hugo site"
+  emitTitle: true

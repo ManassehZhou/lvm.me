@@ -1,0 +1,7 @@
+{{ $hourInSec := 3600 }}
+
+{{ if gt .Lastmod (add (time .Date).Unix $hourInSec) }}
+  {{ with .Lastmod }}
+      {{ . | time.Format ":date_medium" }}
+  {{ end }}
+{{ end }}
