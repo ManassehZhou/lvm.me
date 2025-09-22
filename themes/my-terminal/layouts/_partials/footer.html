@@ -1,6 +1,13 @@
 <div class="footer">
-    {{ if $.Site.Copyright }}
-    {{ $.Site.Copyright }}
-    {{ end }}
-    © Powered by <a href="https://gohugo.io/">Hugo</a>.
+    <div class="footer-content">
+        <div class="footer-info">
+            {{ if $.Site.Copyright }}
+            {{ $.Site.Copyright }}
+            {{ end }}
+            © Powered by <a href="https://gohugo.io/">Hugo</a>.
+        </div>
+        <div class="footer-theme-toggle">
+            {{- partial "theme-toggle.html" . }}
+        </div>
+    </div>
 </div>

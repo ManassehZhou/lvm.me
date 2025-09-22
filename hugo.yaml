@@ -41,3 +41,8 @@ title: lvm.me
 params:
   description: "A Student, A Software Developer, A CTFer, and A Boring People. | Coding With Love and Caffeine. "
   emitTitle: true
+
+markup:
+  highlight:
+    noClasses: false
+    wrapperClass: highlight

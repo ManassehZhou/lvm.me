@@ -49,6 +49,7 @@ markup:
           inline:
             - - \(
               - \)
+
 title: My New Hugo Site
 params:
   description: "A brief description of my new Hugo site"

@@ -1,0 +1,66 @@
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+    <span id="theme-toggle-text">Dark</span>
+</button>
+
+<script>
+(function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleText = document.getElementById('theme-toggle-text');
+    const body = document.documentElement;
+    
+    // Get theme from localStorage or system preference
+    function getInitialTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            return savedTheme;
+        }
+        
+        // Check system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+        }
+        
+        return 'light';
+    }
+    
+    // Set theme
+    function setTheme(theme) {
+        body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        
+        // Update button text
+        if (theme === 'dark') {
+            themeToggleText.textContent = 'Light';
+            themeToggle.setAttribute('aria-label', 'Switch to light theme');
+        } else {
+            themeToggleText.textContent = 'Dark';
+            themeToggle.setAttribute('aria-label', 'Switch to dark theme');
+        }
+    }
+    
+    // Toggle theme
+    function toggleTheme() {
+        const currentTheme = body.getAttribute('data-theme') || getInitialTheme();
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    }
+    
+    // Initialize theme
+    const initialTheme = getInitialTheme();
+    setTheme(initialTheme);
+    
+    // Add click event listener
+    themeToggle.addEventListener('click', toggleTheme);
+    
+    // Listen for system theme changes (optional)
+    if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', function(e) {
+            // Only auto-update if user hasn't manually set a preference
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+    }
+})();
+</script>

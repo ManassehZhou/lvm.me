@@ -1,10 +1,114 @@
 {{ if .Store.Get "hasMermaid" }}
 <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs';
-    var theme = 'default';
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        theme = 'dark';
+    
+    // Function to get current theme
+    function getCurrentTheme() {
+        const dataTheme = document.documentElement.getAttribute('data-theme');
+        if (dataTheme) {
+            return dataTheme === 'dark' ? 'dark' : 'default';
+        }
+        
+        // Fallback to system preference if no manual theme is set
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+        }
+        
+        return 'default';
     }
-    mermaid.initialize({ startOnLoad: true, theme: theme });
+    
+    // Initialize mermaid with current theme
+    function initMermaid() {
+        const theme = getCurrentTheme();
+        
+        // Store original graph definitions before mermaid processes them
+        const mermaidDivs = document.querySelectorAll('.mermaid');
+        mermaidDivs.forEach(div => {
+            if (!div.dataset.originalGraph) {
+                div.dataset.originalGraph = div.textContent.trim();
+            }
+        });
+        
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: theme,
+            themeVariables: {
+                darkMode: theme === 'dark'
+            }
+        });
+    }
+    
+    // Re-render mermaid diagrams when theme changes
+    function updateMermaidTheme() {
+        const theme = getCurrentTheme();
+        mermaid.initialize({ 
+            startOnLoad: false, 
+            theme: theme,
+            themeVariables: {
+                darkMode: theme === 'dark'
+            }
+        });
+        
+        // Re-render all mermaid diagrams
+        const mermaidDivs = document.querySelectorAll('.mermaid');
+        mermaidDivs.forEach((div, index) => {
+            // Store original graph definition if not already stored
+            if (!div.dataset.originalGraph) {
+                div.dataset.originalGraph = div.textContent.trim();
+            }
+            
+            const graphDefinition = div.dataset.originalGraph;
+            const graphId = 'mermaid-' + Date.now() + '-' + index;
+            
+            // Clear the div and reset
+            div.removeAttribute('data-processed');
+            div.innerHTML = graphDefinition;
+            
+            // Re-render with new theme
+            try {
+                mermaid.render(graphId, graphDefinition).then(({ svg }) => {
+                    div.innerHTML = svg;
+                }).catch(error => {
+                    console.error('Mermaid render error:', error);
+                    div.innerHTML = graphDefinition; // Fallback to original text
+                });
+            } catch (error) {
+                console.error('Mermaid render error:', error);
+                div.innerHTML = graphDefinition; // Fallback to original text
+            }
+        });
+    }
+    
+    // Initial setup - wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMermaid);
+    } else {
+        initMermaid();
+    }
+    
+    // Listen for theme changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+                updateMermaidTheme();
+            }
+        });
+    });
+    
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme']
+    });
+    
+    // Also listen for system theme changes as fallback
+    if (window.matchMedia) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        mediaQuery.addEventListener('change', () => {
+            // Only update if no manual theme is set
+            if (!document.documentElement.getAttribute('data-theme')) {
+                updateMermaidTheme();
+            }
+        });
+    }
 </script>
 {{ end }}
