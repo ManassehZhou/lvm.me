@@ -1,5 +1,5 @@
 baseURL: https://lvm.me/
-languageCode: en-US
+locale: en-US
 theme: my-terminal
 hasCJKLanguage: true
 enableRobotsTXT: true
@@ -39,6 +39,9 @@ menus:
       class: menu-item
 title: lvm.me
 params:
+  author:
+    name: Mzzzzz
+    email: admin@lvm.me
   description: "A Student, A Software Developer, A CTFer, and A Boring People. | Coding With Love and Caffeine. "
   emitTitle: true
 
